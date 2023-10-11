@@ -1,0 +1,91 @@
+﻿@using ConeBD;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Lista de Proyectos</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Agregar Nuevo Proyecto</h2>
+                <form method="post">
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaini">Fecha de Inicio:</label>
+                        <input type="date" class="form-control" id="fechaini" name="fechaini" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechafin">Fecha Final:</label>
+                        <input type="date" class="form-control" id="fechafin" name="fechafin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado:</label>
+                        <input type="text" class="form-control" id="estado" name="estado" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Guardar</button>
+                    <button type="reset" class="btn btn-danger">Limpiar</button>
+                </form>
+                @if (IsPost)
+                {
+                    var nombre = Request["nombre"]; // Reemplaza "nombre" con el nombre correcto del campo
+                    var fechaInicio = DateTime.Parse(Request["fechaini"]); // Reemplaza "fechaini" con el nombre correcto del campo
+                    var fechaFinal = DateTime.Parse(Request["fechafin"]); // Reemplaza "fechafin" con el nombre correcto del campo
+                    var estado = Request["estado"]; // Reemplaza "estado" con el nombre correcto del campo
+
+                    if (Global.GuardarProyecto(nombre, fechaInicio, fechaFinal, estado))
+                    {
+                        // Redirige a la misma página para evitar la reejecución del formulario
+                        Response.Redirect(Request.RawUrl);
+                    }
+                    else
+                    {
+                        <h2>Error al guardar</h2>
+                    }
+                }
+            </div>
+            <div class="col-md-6">
+                <h2>Lista de Proyectos</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Fecha Final</th>
+                            <th>Estado</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var proyecto in Global.ListarProyectos())
+                        {
+                            <tr>
+                                <td>@proyecto.ProyectoId</td>
+                                <td>@proyecto.Nombre</td>
+                                <td>@proyecto.FechaInicio.ToString("dd-MM-yyyyy")</td>
+                                <td>@proyecto.FechaFinal.ToString("dd-MM-yyyyy")</td>
+                                <td>@proyecto.Estado</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
